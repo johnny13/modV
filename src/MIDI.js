@@ -1,25 +1,36 @@
 class MIDI {
 	constructor(modV) {
-		/** @private {ModV} Parent ModV instance */
+		/**
+		 * Parent ModV instance
+		 * @type {ModV}
+		 * @private
+		 */
 		this._modV = modV;
+
 		/** @type {MIDIAccess} */
 		this.access = null;
+
 		/** @type {MIDIInputMap} */
 		this.inputs = null;
+
 		/**
-		 * @todo Add flag description 
+		 * @todo Add flag description
 		 * @type {boolean}
 		 */
 		this.learning = false;
+
 		/**
-		 * @todo Add flag description 
+		 * @todo Add flag description
 		 * @type {EventTarget}
 		 */
 		this.currentNode = null;
+
 		/** @type {?string} */
 		this.currentModuleName = null;
+
 		/** @type {?(string|number)} */
 		this.currentControlKey = null;
+
 		/**
 		 * @todo Add description and better type annotation
 		 * @type {Map}
@@ -30,7 +41,7 @@ class MIDI {
 	/**
 	 * Returns name of MIDI input by given id
 	 * @param {DOMString} id
-	 * @return {DOMString} According to https://webaudio.github.io/web-midi-api 
+	 * @return {DOMString} According to https://webaudio.github.io/web-midi-api
 	 */
 	getNameFromID(id) {
 		const inputs = this.inputs;
@@ -217,7 +228,7 @@ class MIDI {
 		}
 }
 
-/** 
+/**
  * Control key prefix used to highlight internal controls
  * @todo Clarify description
  * @const {string}

@@ -13,6 +13,11 @@ require('script-loader!../libraries/beatdetektor.js');
  * @extends {EventEmitter2}
  */
 class ModV extends EventEmitter2 {
+
+	/**
+	 * [constructor description]
+	 * @param  {ModVOptions} options
+	 */
 	constructor(options) {
 		super();
 
@@ -39,10 +44,10 @@ class ModV extends EventEmitter2 {
 		/** @type {Document} */
 		this.templates = this.importTemplates();
 
-		/** 
+		/**
 		 * Set user options
 		 * @todo different datatypes for default options and user-defined options
-		 * @const {ModV.OptionsDataType} 
+		 * @const {ModV.OptionsDataType}
 		 */
 		this.options = Object.assign(this.defaultOptions, options);
 
@@ -54,7 +59,11 @@ class ModV extends EventEmitter2 {
 		 * @type {Array<Layer>}
 		 */
 		this.layers = [];
-		/** @type {number} Currently active layer index */
+		/**
+		 * Currently active layer index
+		 * @todo Possibly rename to "Selected/Focused Layer"
+		 * @type {Number}
+		 */
 		this.activeLayer = 0;
 
 		this.activeModules = {};
@@ -194,7 +203,7 @@ class ModV extends EventEmitter2 {
 
 	/** Saves current modV options to localStorage */
 	saveOptions() {
-		localStorage.setItem(ModV.LOCAL_STORAGE_KEY, JSON.stringify(this.options)); 
+		localStorage.setItem(ModV.LOCAL_STORAGE_KEY, JSON.stringify(this.options));
 	}
 
 	/** Loads options from localStorage and append non-existing keys to current modV options */
@@ -206,7 +215,7 @@ class ModV extends EventEmitter2 {
 		}
 	}
 
-	/** 
+	/**
 	 * UI Templates importing
 	 * @todo Use another way to import templates
 	 *   because HTML imports currently in Working Draft status
@@ -266,11 +275,10 @@ class ModV extends EventEmitter2 {
  */
 ModV.LOCAL_STORAGE_KEY = 'modVoptions';
 
-/** 
- * @typedef {{
- *   baseURL: string,
- *   controlDomain: string,
- * }}
+/**
+ * @typedef  {Object} ModVOptions
+ * @property {String} baseURL               [description]
+ * @property {String} controlDomain         [description]
  */
 ModV.OptionsDataType;
 
