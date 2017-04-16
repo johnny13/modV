@@ -4,8 +4,15 @@ const ControlError = require('./control-error');
 const Control = require('./control');
 
 module.exports = function(modV) {
-	modV.prototype.RangeControl = class RangeControl extends Control {
 
+	/**
+	 * @extends Control
+	 */
+	class RangeControl extends Control {
+
+		/**
+		 * @param  {ControlSettings} settings
+		 */
 		constructor(settings) {
 			let RangeControlError = new ControlError('RangeControl');
 
@@ -82,12 +89,27 @@ module.exports = function(modV) {
 			return node;
 		}
 
+		/**
+		 * [min description]
+		 * @return {Number} [description]
+		 */
 		get min() {
 			return this.settings.min;
 		}
 
+		/**
+		 * [max description]
+		 * @return {Number} [description]
+		 */
 		get max() {
 			return this.settings.max;
 		}
-	};
+	}
+
+	/**
+	 * @name RangeControl
+	 * @memberOf modV
+	 * @type {RangeControl}
+	 */
+	modV.prototype.RangeControl = RangeControl;
 };

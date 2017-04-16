@@ -6,6 +6,13 @@
  *
  * }
  * * * * * * * * * * * * * * * */
+
+/**
+ * [MediaSelector description]
+ * @param {String} type          [description]
+ * @param {Object} callbacks     [description]
+ * @param {String} defaultOption [description]
+ */
 let MediaSelector = function(type, callbacks, defaultOption) {
 	function areSameFile(path1, path2) {
 		if(path2.indexOf(path1.slice(2)) > -1) {
@@ -18,8 +25,16 @@ let MediaSelector = function(type, callbacks, defaultOption) {
 	let select = document.createElement('select');
 	select.classList.add('mediaSelector', type);
 
+	/**
+	 * [currentFile description]
+	 * @type {?String}
+	 */
 	this.currentFile = null;
 
+	/**
+	 * [update description]
+	 * @param  {Object} profiles [description]
+	 */
 	this.update = function(profiles) {
 		let key,
 			profile,
@@ -207,12 +222,24 @@ let MediaSelector = function(type, callbacks, defaultOption) {
 
 	select.addEventListener('change', selectChanged);
 
+	/**
+	 * [returnHTML description]
+	 * @return {Element} [description]
+	 */
 	this.returnHTML = function() {
 		return select;
 	};
 };
 
 module.exports = function(modV) {
+
+	/**
+	 * [MediaSelector description]
+	 * @param  {String} type          [description]
+	 * @param  {Object} callbacks     [description]
+	 * @param  {String} defaultOption [description]
+	 * @return {MediaSelector} [description]
+	 */
 	modV.prototype.MediaSelector = function(type, callbacks, defaultOption) {
 		let ms = new MediaSelector(type, callbacks, defaultOption);
 		ms.update(this.profiles);

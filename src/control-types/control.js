@@ -1,5 +1,12 @@
-module.exports = class Control {
+/**
+ * The base Control Class
+ */
+class Control {
 
+	/**
+	 * @param  {ControlSettings} settings
+	 * @param  {Function}        setValue Custom function to override the default way of parsing values before commiting changes to target variable
+	 */
 	constructor(settings, setValue) {
 		if(!('variable' in settings)) throw new Error('Control had no "variable" in settings');
 		// if(!('label' in settings) && !settings.useInternalValue) {
@@ -150,4 +157,6 @@ module.exports = class Control {
 			this.node.value = this.value;
 		}
 	}
-};
+}
+
+module.exports = Control;
