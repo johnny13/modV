@@ -1,6 +1,8 @@
 import store from '@/../store';
 import WebSocket from 'reconnecting-websocket';
 
+const debug = process.env.NODE_ENV !== 'production' || window.MODV_DEBUG;
+
 class MediaManagerClient {
   constructor() {
     this.available = false;
@@ -10,7 +12,7 @@ class MediaManagerClient {
     try {
       ws = new WebSocket('ws://localhost:3132/');
     } catch(e) {
-      console.warn('Media Manager not connected, retrying');
+      if(debug) console.warn('MediaManagerClient: Initial connect failed, retrying');
     }
 
     this.ws = ws;
@@ -19,14 +21,13 @@ class MediaManagerClient {
 
     ws.addEventListener('error', () => {
       this.available = false;
-      console.warn('Media Manager not connected, retrying');
+      if(debug) console.warn('MediaManagerClient: connection dropped, retrying');
     });
 
     ws.addEventListener('open', () => {
-      console.log(this);
       this.update();
       this.available = true;
-      console.info('Media Manager connected, retriveing media list');
+      if(debug) console.info('MediaManagerClient: connected, retriveing media list');
     });
 
     window.addEventListener('beforeunload', () => {
@@ -49,12 +50,7 @@ class MediaManagerClient {
 
   messageHandler(message) { //eslint-disable-line
     const parsed = JSON.parse(message.data);
-    console.log('Media Manager says:', parsed);
-
-    // let data;
-    // let type;
-    // let profile;
-    // let name;
+    if(debug) console.log('MediaManagerClient: recieved', parsed);
 
     if('type' in parsed) {
       switch(parsed.type) {
@@ -89,90 +85,84 @@ class MediaManagerClient {
                 colors: data.contents
               });
             } else if(type === 'preset') {
-              // modV.profiles[profile].presets[name] = data.contents;
+              store.commit('profiles/addPresetToProfile', {
+                profileName,
+                presetName: name,
+                contents: data.contents
+              });
             } else if(type === 'image') {
-              // modV.profiles[profile].images[name] = data.path;
+              store.commit('profiles/addImageToProfile', {
+                profileName,
+                imageName: name,
+                path: data.path
+              });
             } else if(type === 'video') {
-             //  modV.profiles[profile].videos[name] = data.path;
+              store.commit('profiles/addVideoToProfile', {
+                profileName,
+                videoName: name,
+                path: data.path
+              });
             }
           }
-
           break;
 
-      //   case 'profile-add':
-      //     data = parsed.data;
-      //     profile = data.profile;
+        case 'profile-add':
+          if('data' in parsed) {
+            const data = parsed.data;
+            const profileName = data.profile;
 
-      //     modV.profiles[profile] = {
-      //       palettes: {},
-      //       videos: {},
-      //       images: {},
-      //       presets: {}
-      //     };
-      //     break;
+            store.commit('profiles/addProfile', {
+              profileName,
+              images: {},
+              palettes: {},
+              presets: {},
+              videos: {}
+            });
+          }
+          break;
 
-      //   case 'profile-delete':
-      //     data = parsed.data;
-      //     profile = data.profile;
+        case 'profile-delete':
+          if('data' in parsed) {
+            const data = parsed.data;
+            const profileName = data.profile;
 
-      //     delete modV.profiles[profile];
-      //     break;
+            store.commit('profiles/removeProfile', {
+              profileName
+            });
+          }
+          break;
 
-      //   case 'file-update-delete':
-      //     data = parsed.data;
-      //     type = data.type;
-      //     profile = data.profile;
-      //     name = data.name;
+        case 'file-update-delete':
+          if('data' in parsed) {
+            const data = parsed.data;
+            const type = data.type;
+            const profileName = data.profile;
+            const name = data.name;
 
-      //     if(type === 'palette') {
-      //       delete modV.profiles[profile].palettes[name];
-      //     } else if(type === 'preset') {
-      //       delete modV.profiles[profile].presets[name];
-      //     } else if(type === 'image') {
-      //       delete modV.profiles[profile].images[name];
-      //     } else if(type === 'video') {
-      //       delete modV.profiles[profile].videos[name];
-      //     }
-
-      //     break;
+            if(type === 'palette') {
+              store.commit('profiles/removePaletteFromProfile', {
+                profileName,
+                paletteName: name
+              });
+            } else if(type === 'preset') {
+              store.commit('profiles/removePresetFromProfile', {
+                profileName,
+                presetName: name
+              });
+            } else if(type === 'image') {
+              store.commit('profiles/removeImageFromProfile', {
+                profileName,
+                imageName: name
+              });
+            } else if(type === 'video') {
+              store.commit('profiles/removeVideoFromProfile', {
+                profileName,
+                videoName: name
+              });
+            }
+          }
+          break;
       }
-
-      // modV.mediaSelectors.forEach(function(ms) {
-      //   ms.update(modV.profiles);
-      // });
-
-      // modV.profileSelectors.forEach(function(ps) {
-      //   ps.update(modV.profiles);
-      // });
-
-      // let presetSelectNode = document.querySelector('#loadPresetSelect');
-      // if(!presetSelectNode) return;
-
-      // presetSelectNode.innerHTML = '';
-
-      // let options = [];
-
-      // forIn(modV.profiles, (profileName, profile) => {
-      //   forIn(profile.presets, (presetName, preset) => {
-      //     if(presetSelectNode) {
-      //       var optionNode = document.createElement('option');
-      //       optionNode.value = presetName;
-      //       optionNode.textContent = presetName;
-
-      //       options.push(optionNode);
-      //     }
-
-      //     modV.presets[presetName] = preset;
-      //   });
-      // });
-
-      // options.sort((a, b) => {
-      //   return a.textContent.localeCompare(b.textContent);
-      // });
-
-      // options.forEach(node => {
-      //   presetSelectNode.appendChild(node);
-      // });
     }
   }
 }

@@ -41,7 +41,7 @@
                 <global-controls></global-controls>
               </div>
               <div slot="tab-3" class="pure-u-1-1 preset-control-panel-wrapper control-panel-wrapper pure-g">
-
+                <preset-controls></preset-controls>
               </div>
             </tabs>
           </div>
@@ -67,6 +67,7 @@
   import LayerMenu from '@/components/LayerMenu';
   import List from '@/components/List';
   import OutputWindowButton from '@/components/OutputWindowButton';
+  import PresetControls from '@/components/PresetControls';
   import Tabs from '@/components/Tabs';
 
   export default {
@@ -79,6 +80,7 @@
       LayerMenu,
       List,
       OutputWindowButton,
+      PresetControls,
       Tabs
     },
   };
